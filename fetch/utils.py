@@ -1,5 +1,13 @@
 import random
+import re
+from collections import OrderedDict
 from urllib.parse import urlparse
+
+import aiohttp
+import async_timeout
+import cchardet
+import requests
+from bs4 import BeautifulSoup
 
 
 async def get_random_user_agent():
@@ -34,3 +42,62 @@ def get_netloc(url):
     """
     netloc = urlparse(url).netloc
     return netloc or None
+
+
+async def target_fetch(url, headers, timeout=15):
+    with async_timeout.timeout(timeout):
+        try:
+            async with aiohttp.ClientSession() as client:
+                async with client.get(url, headers=headers) as response:
+                    assert response.status == 200
+                    try:
+                        text = await response.text()
+                    except:
+                        try:
+                            text = await response.read()
+                        except aiohttp.ServerDisconnectedError as e:
+                            text = None
+                    return text
+        except Exception as e:
+            return None
+
+
+def get_html_by_requests(url, headers, timeout=15):
+    try:
+        response = requests.get(url=url, headers=headers, verify=False, timeout=timeout)
+        response.raise_for_status()
+        content = response.content
+        charset = cchardet.detect(content)
+        text = content.decode(charset['encoding'])
+        return text
+    except Exception as e:
+        return None
+
+
+def extract_pre_next_chapter(chapter_url, html):
+    """
+    获取单章节上一页下一页
+    :param chapter_url:
+    :param html:
+    :return:
+    """
+    next_chapter = OrderedDict()
+    try:
+        # 参考https://greasyfork.org/zh-CN/scripts/292-my-novel-reader
+        next_reg = r'(<a\s+.*?>.*[第上前下后][一]?[0-9]{0,6}?[页张个篇章节步].*?</a>)'
+        judge_reg = r'[第上前下后][一]?[0-9]{0,6}?[页张个篇章节步]'
+        # 这里同样需要利用bs再次解析
+        next_res = re.findall(next_reg, html.replace('<<', '').replace('>>', ''), re.I)
+        str_next_res = '\n'.join(next_res)
+        next_res_soup = BeautifulSoup(str_next_res, 'html5lib')
+        for link in next_res_soup.find_all('a'):
+            text = link.text or ''
+            text = text.replace(' ', '')
+            if novels_list(text):
+                is_next = re.search(judge_reg, text)
+                if is_next:
+                    url = urljoin(chapter_url, link.get('href')) or ''
+                    next_chapter[text[:5]] = url
+        return next_chapter
+    except Exception as e:
+        return next_chapter

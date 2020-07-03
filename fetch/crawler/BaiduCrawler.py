@@ -8,6 +8,8 @@ from .BaseCrawler import BaseCrawler
 from fetch.utils import get_random_user_agent, get_netloc
 from django.conf import settings
 
+from ..models import BlackDomain
+
 
 class BaiduCrawler(BaseCrawler):
     def __init__(self):
@@ -48,7 +50,7 @@ class BaiduCrawler(BaseCrawler):
                 netloc = get_netloc(real_str_url)
                 if "http://" + netloc + "/" == real_str_url:
                     return None
-                if 'baidu' in real_str_url or netloc in self.black_domain:
+                if 'baidu' in real_str_url or netloc in BlackDomain.objects.all():
                     return None
                 title = html.select('h3.t a')[0].get_text()
                 return {
