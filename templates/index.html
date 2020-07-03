@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/everbook.css' %}">
+{% endblock %}
+
+{% block container %}
+    <div class="page-header header-filter clear-filter purple-filter" data-parallax="true"
+         style="background-image: url({% static 'img/bg2.jpg' %});">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 ml-auto mr-auto">
+                    <div class="brand">
+                        <h1 class="text-center">EverBook</h1>
+                    </div>
+                    <form method="get" action="{% url 'everbook:search' %}">
+                        <div class="form-group">
+                            <input type="text" class="form-control search-bar" name="q">
+                        </div>
+                        <div class="form-group text-center">
+                            <button type="submit" class="btn btn-default btn-round">搜索</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
