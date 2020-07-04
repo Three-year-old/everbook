@@ -3,8 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <title>EverBook</title>
+    <link rel="stylesheet" href="../static/css/everbook.css">
 </head>
 <body>
-
+<div class="auth">
+    <a id="login-button" href="#">登录</a>
+</div>
+<div>
+    <img id="logo" src="../static/images/logo.png" alt="logo">
+</div>
+<form method="get" action="/search/">
+    <div class="form-group">
+        <label for="search-input"></label><input id="search-input" required="required" name="keyword"/>
+    </div>
+    <div class="form-group">
+        <button id="search-button" type="submit">搜索</button>
+        <button id="lucky-button">了解更多</button>
+    </div>
+</form>
 </body>
 </html>

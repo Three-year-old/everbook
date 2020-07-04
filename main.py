@@ -1,7 +1,5 @@
-from typing import Optional
-
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, Form
 from fastapi.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 
@@ -12,13 +10,18 @@ templates = Jinja2Templates(directory="templates")
 
 
 @app.get("/")
-def read_root():
-    return {"Hello": "World"}
+async def read_root(request: Request):
+    return templates.TemplateResponse("index.html", {
+        "request": request,
+    })
 
 
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Optional[str] = None):
-    return {"item_id": item_id, "q": q}
+@app.get("/search")
+async def search(request: Request, keyword: str):
+    print(keyword)
+    return templates.TemplateResponse("index.html", {
+        "request": request,
+    })
 
 
 if __name__ == "__main__":
