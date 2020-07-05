@@ -36,12 +36,12 @@ body {
 }
 
 #search-button, #lucky-button {
-    background-image: -webkit-linear-gradient(top,#f5f5f5,#f1f1f1);
+    background-image: -webkit-linear-gradient(top, #f5f5f5, #f1f1f1);
     background-color: #f2f2f2;
     border: 1px solid #f2f2f2;
     border-radius: 4px;
     color: #5F6368;
-    font-family: arial,sans-serif;
+    font-family: arial, sans-serif;
     font-size: 14px;
     margin: 11px 4px;
     padding: 0 16px;
@@ -58,7 +58,7 @@ body {
     font-weight: bold;
     outline: none;
     background: #4285f4;
-    background: -webkit-linear-gradient(top,#4387fd,#4683ea);
+    background: -webkit-linear-gradient(top, #4387fd, #4683ea);
     color: #fff;
     text-decoration: none;
     margin-left: 90%;

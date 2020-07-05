@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ novel }} - EverBook</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/css/chapter.css">
+</head>
+<body>
+<div class="container-fluid">
+    <div class="panel panel-default">
+        <div class="panel-header">
+            <h1 class="text-center">{{ novel }}</h1>
+        </div>
+        <div class="panel-body">
+            {% for item in info %}
+                {% if loop.index == 1 %}
+                {% else %}
+                    <p class="info">{{ item }}</p>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-body">
+            {% for item in intro %}
+                <p class="intro">{{ item }}</p>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <dl>
+                <dt>正文</dt>
+                {% for chapter in chapters %}
+                    <dd><a href="{{ chapter.href }}">{{ chapter.name }}</a></dd>
+                {% endfor %}
+            </dl>
+        </div>
+    </div>
+</div>
+</body>
+</html>
