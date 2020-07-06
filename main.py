@@ -2,11 +2,12 @@ import uvicorn
 from fastapi import FastAPI
 from starlette.staticfiles import StaticFiles
 
-from routes import search
+from routes import search, authentication
 
 app = FastAPI()
 
 app.include_router(search.router)
+app.include_router(authentication.router)
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 

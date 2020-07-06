@@ -26,3 +26,20 @@ class Rule(Base):
     chapter_value = Column(String)
     content_tag = Column(String)
     content_value = Column(String)
+
+
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    username = Column(String)
+    email = Column(String)
+    password = Column(String)
+
+
+class Shelf(Base):
+    __tablename__ = "shelf"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer)
+    book = Column(String)
