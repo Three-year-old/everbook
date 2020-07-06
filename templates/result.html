@@ -44,7 +44,11 @@
         {% for result in results %}
             <div class="result">
                 <h3 class="t">
-                    <a>{{ result.title }}</a>
+                    {% if result.parsed %}
+                        <a href="/chapter?url={{ result.url }}" target="_blank">{{ result.title }}</a>
+                    {% else %}
+                        <a href="{{ result.url }}" target="_blank">{{ result.title }}</a>
+                    {% endif %}
                     {#                <span class="label label-success">推荐源</span>#}
                     {% if result.parsed %}
                         <span class="label label-primary">已解析</span>

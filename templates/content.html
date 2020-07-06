@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>EverBook</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/material-kit/2.0.6/css/material-kit.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css"
+          href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons">
+    <link rel="stylesheet" href="../static/css/content.css">
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg" id="nav">
+    <div class="container">
+        <div class="navbar-translate">
+            <a class="navbar-brand" href="/">EverBook</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <form class="form-inline ml-auto">
+                <div class="form-group no-border">
+                    <input type="text" class="form-control" placeholder="Search">
+                </div>
+                <button type="submit" class="btn btn-white btn-just-icon btn-round">
+                    <i class="material-icons">search</i>
+                </button>
+            </form>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a href="#" class="nav-link">登录</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="wrap">
+    <div class="container row flex-xl-nowrap">
+        <div class="d-xl-block float-box bd-toc">
+            <ul class="section-nav">
+                <li class="toc-entry toc-h2">
+                    <button class="btn btn-round">
+                        <i class="material-icons">list</i>
+                    </button>
+                </li>
+                <li class="toc-entry toc-h2">
+                    <button type="button" class="btn btn-round" id="change" property="night">
+                        <i class="material-icons">bedtime</i>
+                    </button>
+                </li>
+                <li class="toc-entry toc-h2">
+                    <button class="btn btn-round">
+                        <i class="material-icons">book</i>
+                    </button>
+                </li>
+            </ul>
+        </div>
+        <div class="card col-md-10 offset-2" id="context">
+            <div class="card-body">
+                <h4 class="card-title text-center">第一章 黄山真君和九洲一号群</h4>
+                <p>这个季节，江南区的昼夜温差变的很大。白天还穿裤衩热成狗；晚上却得缩在被窝里冻成寒号鸟。</p>
+                <p>下午两点十三分，这个点正是学生们上课的时间。宋书航却独自呆在宿舍，电脑桌被拉到床边，方便他用各种姿势观看电影。</p>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    // 切换背景颜色
+    $("#change").click(function (e) {
+        var btn = document.getElementById("change");
+        var context = document.getElementById("context");
+        if (btn.getAttribute("property") == "night") {
+            context.style.cssText = "background-color: #0f1112 !important;";
+            document.body.style.cssText = "background-color: #444 !important; background-image: url('../images/night.png');";
+            btn.innerHTML = "<i class=\"material-icons\">wb_sunny</i>";
+            btn.setAttribute("property", "day");
+            var title = context.getElementsByTagName("h4");
+            title[0].style.cssText = "color: grey;"
+            var p = context.getElementsByTagName("p");
+            for (var i = 0; i < p.length; i++) {
+                p[i].style.cssText = "color: #666;"
+            }
+            document.getElementById("nav").className += " bg-dark";
+        } else if (btn.getAttribute("property") == "day") {
+            context.style.cssText = "background-color: #ede7da !important;";
+            document.body.style.cssText = "background-color: #ede7da !important; background-image: url('../images/day.png');";
+            btn.innerHTML = "<i class=\"material-icons\">bedtime</i>";
+            btn.setAttribute("property", "night");
+            document.getElementById("nav").classList.remove("bg-dark");
+        }
+    });
+</script>
+</html>

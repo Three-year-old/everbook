@@ -67,7 +67,14 @@ async def search(request: Request, keyword: str, db: Session = Depends(get_db)):
 
 
 @router.get("/chapter/")
-async def get_book_chapter(request: Request, url: str, novel: str, db: Session = Depends(get_db)):
+async def get_book_chapter(request: Request, url: str, db: Session = Depends(get_db)):
+    """
+    获取小说章节以及其他信息
+    :param request:
+    :param url: 抓取的小说网站url
+    :param db:
+    :return:
+    """
     netloc = get_netloc(url)
     # 获取已解析的域名
     allow = []
@@ -79,6 +86,8 @@ async def get_book_chapter(request: Request, url: str, novel: str, db: Session =
     content = await get_novels_chapter(url=url, choice=rule.choice, chapter_tag=rule.chapter_tag,
                                        chapter_value=rule.chapter_value)
     info = [i.strip() for i in content["info"] if i.strip() is not ""]
+    novel = info[0]
+    info = info[1::]
     intro = [i.strip() for i in content["intro"] if i.strip() is not ""]
     chapters = content["chapter"]
     if content:
@@ -92,6 +101,13 @@ async def get_book_chapter(request: Request, url: str, novel: str, db: Session =
     else:
         # todo 解析失败后应返回一个错误页面
         pass
+
+
+@router.get("/content")
+def get_chapter_content(request: Request, db: Session = Depends(get_db)):
+    return templates.TemplateResponse("content.html", {
+        "request": request,
+    })
 
 
 @router.post("/create/black", response_model=schemas.BlackList)
