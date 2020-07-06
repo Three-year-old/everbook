@@ -38,11 +38,12 @@ async def get_novels_chapter(url, choice, chapter_tag, chapter_value):
     return None
 
 
-async def get_novels_content(url, netloc):
+async def get_novels_content(url, content_tag, content_value):
     """
     获取每章节内容
+    :param content_tag:
+    :param content_value:
     :param url: 源地址
-    :param netloc: 域名
     :return: 每章节内容以及上下文链接
     """
     headers = {
@@ -54,17 +55,16 @@ async def get_novels_content(url, netloc):
         html = get_html_by_requests(url=url, headers=headers)
     if html:
         soup = BeautifulSoup(html, 'html5lib')
-        selector = RULES[netloc].content_selector
-        if selector.get('id', None):
-            content = soup.find_all(id=selector['id'])
+        if content_tag == "id":
+            content = soup.find_all(id=content_value)
             for item in content:
                 article = item.get_text(strip=False).split("\xa0")
                 article = [i for i in article if i is not ""]
                 novel["article"] = article
-        elif selector.get('class', None):
-            content = soup.find_all(class_=selector['class'])
+        elif content_tag == "class":
+            content = soup.find_all(class_=content_value)
         else:
-            content = soup.find_all(selector.get('tag'))
+            content = soup.find_all(content_value)
         # 提取出真正的章节标题
         title_reg = r'(第?\s*[一二两三四五六七八九十○零百千万亿0-9１２３４５６７８９０]{1,6}\s*[章回卷节折篇幕集]\s*.*?)[_,-]'
         title = soup.title.string

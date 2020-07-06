@@ -30,7 +30,7 @@
             <dl>
                 <dt>正文</dt>
                 {% for chapter in chapters %}
-                    <dd><a href="{{ chapter.href }}">{{ chapter.name }}</a></dd>
+                    <dd><a href="/content?url={{ chapter.href }}&novel={{ novel }}&chapter={{ url }}">{{ chapter.name }}</a></dd>
                 {% endfor %}
             </dl>
         </div>

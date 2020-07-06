@@ -3,6 +3,10 @@ body {
     background-image: url("../images/day.png");
 }
 
+.wrap {
+    margin-top: 10%;
+}
+
 .card {
     box-shadow: 0 0 15px 0 #CCC;
     background-color: #ede7da !important;
@@ -32,6 +36,15 @@ body {
     }
 }
 
+.card-body p {
+    text-indent: 2em;
+    line-height: 1.8;
+    word-break: break-all;
+    font-size: 16px;
+    overflow: hidden;
+    margin: .8em 0;
+}
+
 .section-nav {
     border-left: 1px solid #eee;
 }
@@ -42,4 +55,8 @@ body {
 
 .toc-entry a {
     color: #99979c;
+}
+
+.footer {
+    margin-bottom: 3%;
 }
