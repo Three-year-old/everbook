@@ -1,4 +1,4 @@
-from fetch.utils import get_netloc
+from urllib.parse import urlparse
 
 
 class NovelParse:
@@ -48,7 +48,7 @@ class NovelParse:
                     if self.rule == 2:
                         chapter.append({
                             "name": j.text,
-                            "href": get_netloc(self.url) + j.a["href"],
+                            "href": '{uri.scheme}://{uri.netloc}/'.format(uri=urlparse(self.url)) + j.a["href"],
                         })
                 self.novel["chapter"] = chapter
         return self.novel
