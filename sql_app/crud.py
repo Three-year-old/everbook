@@ -1,3 +1,7 @@
+import hashlib
+import uuid
+
+from fastapi import Response
 from sqlalchemy.orm import Session
 
 from sql_app import models, schemas
@@ -90,3 +94,38 @@ def email_is_exist(db: Session, email: str):
     :return:
     """
     return db.query(models.User).filter(models.User.email == email).first()
+
+
+def set_cookie(response: Response, username: str, email: str):
+    """
+    设置cookie
+    :param response:
+    :param username:
+    :param email:
+    :return:
+    """
+    response.set_cookie(key="login", value=str(uuid.uuid1()))
+    response.set_cookie(key="username", value=username)
+    response.set_cookie(key="email", value=email)
+
+
+def get_login_user(db: Session, username: str, password: str):
+    """
+    查询是否存在登录用户
+    :param db:
+    :param username: 用户名或邮箱
+    :param password: 密码
+    :return:
+    """
+    md5 = hashlib.md5()
+    md5.update(bytes(password, encoding="utf-8"))
+    password = md5.hexdigest()
+    db_user_by_username = db.query(models.User).filter(models.User.username == username).filter(
+        models.User.password == password).first()
+    db_user_by_email = db.query(models.User).filter(models.User.email == username).filter(
+        models.User.password == password).first()
+    if db_user_by_username:
+        return db_user_by_username
+    if db_user_by_email:
+        return db_user_by_email
+    return None

@@ -9,12 +9,13 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
 </head>
 <body>
-<div class="page-header header-filter" style="background-image: url('../static/images/bg.jpg'); background-size: cover; background-position: top center;">
+<div class="page-header header-filter"
+     style="background-image: url('../static/images/bg.jpg'); background-size: cover; background-position: top center;">
     <div class="container">
         <div class="row">
             <div class="col-lg-4 col-md-6 ml-auto mr-auto">
                 <div class="card card-login">
-                    <form class="form" method="" action="">
+                    <form class="form" method="post" action="/login" id="loginForm" name="loginForm">
                         <div class="card-header card-header-success text-center">
                             <h4 class="card-title">登录</h4>
                             <div class="social-line">
@@ -36,7 +37,8 @@
                                         <i class="material-icons">face</i>
                                     </span>
                                 </div>
-                                <input type="text" class="form-control" placeholder="你的名字/邮箱">
+                                <input type="text" class="form-control" placeholder="你的名字/邮箱" name="username"
+                                       required="required">
                             </div>
                             <div class="input-group">
                                 <div class="input-group-prepend">
@@ -44,9 +46,13 @@
                                         <i class="material-icons">lock_outline</i>
                                     </span>
                                 </div>
-                                <input type="password" class="form-control" placeholder="你的密码">
+                                <input type="password" class="form-control" placeholder="你的密码" name="password"
+                                       required="required">
                             </div>
                         </div>
+                        {% if error %}
+                            <small class="form-text text-center" style="color: red">{{ error }}</small>
+                        {% endif %}
                         <div class="footer text-center">
                             <button type="submit" class="btn btn-success">登录</button>
                             <button type="button" class="btn btn-danger" onclick="register()">注册</button>
@@ -62,5 +68,21 @@
     function register() {
         window.location.href = "/register";
     }
+
+    var form = document.getElementById("loginForm");
+    form.addEventListener("submit", function () {
+        var username = loginForm.username.value;
+        var password = loginForm.password.value;
+        if (username !== "" && password !== "") {
+            // 登录
+        } else {
+            Swal.fire({
+                type: 'error',
+                title: '出错了...',
+                text: '请完整填写表单',
+            });
+            event.preventDefault();
+        }
+    })
 </script>
 </html>
