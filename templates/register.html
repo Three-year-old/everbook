@@ -7,14 +7,18 @@
     <link rel="stylesheet" type="text/css"
           href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+    <link href="https://cdn.bootcdn.net/ajax/libs/limonte-sweetalert2/8.11.8/sweetalert2.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/limonte-sweetalert2/8.11.8/sweetalert2.all.min.js"></script>
 </head>
 <body>
-<div class="page-header header-filter" style="background-image: url('../static/images/bg.jpg'); background-size: cover; background-position: top center;">
+<div class="page-header header-filter"
+     style="background-image: url('../static/images/bg.jpg'); background-size: cover; background-position: top center;">
     <div class="container">
         <div class="row">
             <div class="col-lg-4 col-md-6 ml-auto mr-auto">
                 <div class="card card-login">
-                    <form class="form" method="" action="">
+                    <form class="form" method="post" action="/everbook/register" id="register" name="registerForm">
                         <div class="card-header card-header-success text-center">
                             <h4 class="card-title">注册</h4>
                             <div class="social-line">
@@ -36,7 +40,8 @@
                                         <i class="material-icons">face</i>
                                     </span>
                                 </div>
-                                <input type="text" class="form-control" placeholder="你的名字">
+                                <input id="username" type="text" class="form-control" placeholder="你的名字"
+                                       name="username">
                             </div>
                             <div class="input-group">
                                 <div class="input-group-prepend">
@@ -44,7 +49,7 @@
                                         <i class="material-icons">mail</i>
                                     </span>
                                 </div>
-                                <input type="email" class="form-control" placeholder="你的邮箱">
+                                <input id="email" type="email" class="form-control" placeholder="你的邮箱" name="email">
                             </div>
                             <div class="input-group">
                                 <div class="input-group-prepend">
@@ -52,7 +57,7 @@
                                         <i class="material-icons">lock_outline</i>
                                     </span>
                                 </div>
-                                <input type="password" class="form-control" placeholder="你的密码">
+                                <input type="password" class="form-control" placeholder="你的密码" name="password">
                             </div>
                             <div class="input-group">
                                 <div class="input-group-prepend">
@@ -60,7 +65,7 @@
                                         <i class="material-icons">lock_outline</i>
                                     </span>
                                 </div>
-                                <input type="password" class="form-control" placeholder="确认密码">
+                                <input type="password" class="form-control" placeholder="确认密码" name="repassword">
                             </div>
                         </div>
                         <div class="footer text-center">
@@ -78,5 +83,82 @@
     function login() {
         window.location.href = "/login"
     }
+
+    $("#username").blur(function () {
+        var name = $("#username").val();
+        if (name) {
+            $.ajax({
+                url: "/everbook/examine/username",
+                type: "post",
+                data: {
+                    "name": name
+                },
+                success: function (result) {
+                    if (result.code === 1) {
+                        // 用户名已存在
+                        Swal.fire({
+                            type: 'warning',
+                            text: '用户名已存在',
+                        });
+                        setTimeout(function () {
+                            location.reload()
+                        }, 2000);
+                    }
+                }
+            });
+        }
+    });
+
+    $("#email").blur(function () {
+        var email = $("#email").val();
+        if (email) {
+            $.ajax({
+                url: "/everbook/examine/email",
+                type: "post",
+                data: {
+                    "email": email
+                },
+                success: function (result) {
+                    if (result.code === 1) {
+                        // 邮箱已注册
+                        Swal.fire({
+                            type: 'warning',
+                            text: '邮箱已注册',
+                            footer: '<a href="/login">前往登录</a>'
+                        });
+                        document.getElementById("email").onfocus;
+                    }
+                }
+            });
+        }
+    });
+
+    var form = document.getElementById("register");
+    form.addEventListener("submit", function () {
+        var username = registerForm.username.value;
+        var email = registerForm.email.value;
+        var password = registerForm.password.value;
+        var repassword = registerForm.repassword.value;
+        if (username !== "" && email !== "" && password !== "" && repassword !== "") {
+            // 判断两次密码是否一致
+            if (password === repassword) {
+
+            } else {
+                Swal.fire({
+                    type: 'error',
+                    title: "出错了...",
+                    text: '两次输入密码不一致',
+                });
+                event.preventDefault();
+            }
+        } else {
+            Swal.fire({
+                type: 'error',
+                title: '出错了...',
+                text: '请完整填写表单',
+            });
+            event.preventDefault();
+        }
+    })
 </script>
 </html>

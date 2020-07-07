@@ -54,3 +54,39 @@ def get_rule_by_netloc(db: Session, netloc: str):
     :return:
     """
     return db.query(models.Rule).filter(models.Rule.netloc == netloc).first()
+
+
+def create_user(db: Session, username: str, email: str, password: str):
+    """
+    创建用户
+    :param password:
+    :param email:
+    :param username:
+    :param db:
+    :return:
+    """
+    db_user = models.User(email=email, username=username, password=password)
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user
+
+
+def username_is_exist(db: Session, username: str):
+    """
+    判断用户名是否存在
+    :param db:
+    :param username: 用户名
+    :return:
+    """
+    return db.query(models.User).filter(models.User.username == username).first()
+
+
+def email_is_exist(db: Session, email: str):
+    """
+    判断邮箱是否注册
+    :param email: 邮箱
+    :param db:
+    :return:
+    """
+    return db.query(models.User).filter(models.User.email == email).first()

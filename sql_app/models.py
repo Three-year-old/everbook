@@ -1,3 +1,4 @@
+from fastapi import Form
 from sqlalchemy import Column, Integer, String
 
 from .database import Base

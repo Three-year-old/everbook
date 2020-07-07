@@ -100,8 +100,8 @@ async def get_book_chapter(request: Request, url: str, db: Session = Depends(get
             "chapters": chapters,
         })
     else:
-        # todo 解析失败后应返回一个错误页面
-        pass
+        # 解析失败后应返回一个错误页面
+        return HTTPException(status_code=404, detail="解析失败")
 
 
 @router.get("/content")

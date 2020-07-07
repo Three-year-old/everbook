@@ -14,3 +14,4 @@ class BlackList(BlackListBase):
 
     class Config:
         orm_mode = True
+
