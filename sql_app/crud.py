@@ -96,9 +96,10 @@ def email_is_exist(db: Session, email: str):
     return db.query(models.User).filter(models.User.email == email).first()
 
 
-def set_cookie(response: Response, username: str, email: str):
+def set_cookie(response: Response, username: str, email: str, id: str):
     """
     设置cookie
+    :param id:
     :param response:
     :param username:
     :param email:
@@ -107,6 +108,7 @@ def set_cookie(response: Response, username: str, email: str):
     response.set_cookie(key="login_status", value=str(uuid.uuid1()))
     response.set_cookie(key="username", value=username)
     response.set_cookie(key="email", value=email)
+    response.set_cookie(key="id", value=id)
 
 
 def get_login_user(db: Session, username: str, password: str):
@@ -129,3 +131,26 @@ def get_login_user(db: Session, username: str, password: str):
     if db_user_by_email:
         return db_user_by_email
     return None
+
+
+def put_book_in_shelf(db: Session, url: str, name: str, id: str):
+    """
+    将小说加入书架
+    :param id:
+    :param db:
+    :param url:
+    :param name:
+    :return:
+    """
+    db_book = models.Shelf(url=url, book=name, user_id=int(id))
+    db.add(db_book)
+    db.commit()
+    db.refresh(db_book)
+    return db_book
+
+
+def check_book_in_shelf(db: Session, url: str):
+    db_book = db.query(models.Shelf).filter(models.Shelf.url == url).first()
+    if db_book:
+        return True
+    return False

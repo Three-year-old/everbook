@@ -7,7 +7,8 @@ from starlette.responses import RedirectResponse
 from starlette.status import HTTP_303_SEE_OTHER
 from starlette.templating import Jinja2Templates
 
-from sql_app.crud import create_user, username_is_exist, email_is_exist, set_cookie, get_login_user
+from sql_app.crud import create_user, username_is_exist, email_is_exist, set_cookie, get_login_user, put_book_in_shelf, \
+    check_book_in_shelf
 from sql_app.database import SessionLocal
 
 router = APIRouter()
@@ -45,8 +46,8 @@ async def register_user(request: Request, response: Response, username: str = Fo
     md5.update(bytes(password, encoding="utf-8"))
     password = md5.hexdigest()
     db_user = create_user(db=db, username=username, email=email, password=password)
-    set_cookie(response=response, username=username, email=email)
-    return RedirectResponse(url="/", status_code=HTTP_303_SEE_OTHER)
+    set_cookie(response=response, username=username, email=email, id=db_user.id)
+    return RedirectResponse(url="/login", status_code=HTTP_303_SEE_OTHER)
 
 
 @router.post("/login")
@@ -58,7 +59,7 @@ def login_user(request: Request, response: Response, username: str = Form(...), 
             "status": 1,
             "msg": "用户名或密码不正确"
         }
-    set_cookie(response=response, username=user.username, email=user.email)
+    set_cookie(response=response, username=user.username, email=user.email, id=user.id)
     return {
         "status": 0,
         "msg": "登录成功",
@@ -103,3 +104,22 @@ async def get_user(request: Request, login_status: Optional[str] = Cookie(None),
         })
     else:
         return RedirectResponse(url="/", status_code=HTTP_303_SEE_OTHER)
+
+
+@router.post("/favorite/book")
+async def mark_book(url: str = Form(...), name: str = Form(...), id: str = Form(...), db: Session = Depends(get_db)):
+    if check_book_in_shelf(db=db, url=url):
+        return {
+            "code": "warning",
+            "msg": "已经在书架中了"
+        }
+    book = put_book_in_shelf(url=url, name=name, db=db, id=id)
+    if book:
+        return {
+            "code": "success",
+            "msg": "加入书架成功"
+        }
+    return {
+        "code": "error",
+        "msg": "未知错误"
+    }
