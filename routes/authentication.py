@@ -1,6 +1,7 @@
 import hashlib
+from typing import Optional
 
-from fastapi import APIRouter, Request, Depends, Form, Response
+from fastapi import APIRouter, Request, Depends, Form, Response, Cookie
 from sqlalchemy.orm import Session
 from starlette.responses import RedirectResponse
 from starlette.status import HTTP_303_SEE_OTHER
@@ -49,17 +50,19 @@ async def register_user(request: Request, response: Response, username: str = Fo
 
 
 @router.post("/login")
-async def login_user(request: Request, response: Response, username: str = Form(...), password: str = Form(...),
+def login_user(request: Request, response: Response, username: str = Form(...), password: str = Form(...),
                      db: Session = Depends(get_db)):
     user = get_login_user(db=db, username=username, password=password)
     if not user:
-        return templates.TemplateResponse("login.html", {
-            "request": request,
-            "error": "用户名或密码不正确"
-        })
-    response.set_cookie(key="test", value="cookie")
+        return {
+            "status": 1,
+            "msg": "用户名或密码不正确"
+        }
     set_cookie(response=response, username=user.username, email=user.email)
-    return RedirectResponse(url="/", status_code=HTTP_303_SEE_OTHER)
+    return {
+        "status": 0,
+        "msg": "登录成功",
+    }
 
 
 @router.post("/everbook/examine/username")
@@ -88,3 +91,12 @@ async def examine_email(email: str = Form(...), db: Session = Depends(get_db)):
     return {
         "code": 0,
     }
+
+
+@router.get("/user")
+async def get_user(request: Request, login_status: Optional[str] = Cookie(None)):
+    if login_status:
+        return templates.TemplateResponse("user.html", {
+        })
+    else:
+        return RedirectResponse(url="/", status_code=HTTP_303_SEE_OTHER)

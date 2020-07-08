@@ -1,6 +1,7 @@
 import time
+from typing import Optional
 
-from fastapi import APIRouter, Request, Depends, HTTPException
+from fastapi import APIRouter, Request, Depends, HTTPException, Cookie
 from sqlalchemy.orm import Session
 from starlette.responses import RedirectResponse
 from starlette.templating import Jinja2Templates
@@ -27,16 +28,18 @@ def get_db():
 
 
 @router.get("/")
-async def read_root(request: Request):
+async def read_root(request: Request, username: Optional[str] = Cookie(None)):
     return templates.TemplateResponse("index.html", {
         "request": request,
+        "username": username,
     })
 
 
 @router.get("/search")
-async def search(request: Request, keyword: str, db: Session = Depends(get_db)):
+async def search(request: Request, keyword: str, db: Session = Depends(get_db), username: Optional[str] = Cookie(None)):
     """
     利用百度搜索解析结果搜索小说
+    :param username: 若用户登录则从cookie中读取用户名
     :param request:
     :param keyword: 关键词
     :param db:
@@ -63,6 +66,7 @@ async def search(request: Request, keyword: str, db: Session = Depends(get_db)):
         "time": round(end - start, 3),
         "results": results,
         "length": len(results),
+        "username": username,
     })
 
 
@@ -105,7 +109,8 @@ async def get_book_chapter(request: Request, url: str, db: Session = Depends(get
 
 
 @router.get("/content")
-async def get_chapter_content(request: Request, url: str, novel: str, chapter: str, db: Session = Depends(get_db)):
+async def get_chapter_content(request: Request, url: str, novel: str, chapter: str, db: Session = Depends(get_db),
+                              username: Optional[str] = Cookie(None)):
     netloc = get_netloc(url)
     allow = []
     for item in get_allow_domain(db):
@@ -123,6 +128,7 @@ async def get_chapter_content(request: Request, url: str, novel: str, chapter: s
         "title": content["title"],
         "chapter": chapter,
         "pages": pages,
+        "username": username
     })
 
 

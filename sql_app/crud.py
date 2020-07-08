@@ -104,7 +104,7 @@ def set_cookie(response: Response, username: str, email: str):
     :param email:
     :return:
     """
-    response.set_cookie(key="login", value=str(uuid.uuid1()))
+    response.set_cookie(key="login_status", value=str(uuid.uuid1()))
     response.set_cookie(key="username", value=username)
     response.set_cookie(key="email", value=email)
 

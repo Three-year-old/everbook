@@ -9,7 +9,12 @@
 </head>
 <body>
 <div class="auth">
-    <a id="login-button" href="/login">登录</a>
+    {% if username %}
+        <a id="login-button" href="/login">{{ username }}</a>
+    {% else %}
+        <a id="login-button" href="/login">登录</a>
+    {% endif %}
+
 </div>
 <div>
     <img id="logo" src="../static/images/logo.png" alt="logo">
@@ -25,5 +30,10 @@
 </form>
 </body>
 <script>
+    $(document).ready(function () {
+        if ($.cookie("login") !== null && window.location.pathname !== "/") {
+            window.location.href = "/";
+        }
+    })
 </script>
 </html>

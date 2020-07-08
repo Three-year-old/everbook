@@ -7,6 +7,9 @@
     <link rel="stylesheet" type="text/css"
           href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+    <link href="https://cdn.bootcdn.net/ajax/libs/limonte-sweetalert2/8.11.8/sweetalert2.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/limonte-sweetalert2/8.11.8/sweetalert2.all.min.js"></script>
 </head>
 <body>
 <div class="page-header header-filter"
@@ -15,7 +18,8 @@
         <div class="row">
             <div class="col-lg-4 col-md-6 ml-auto mr-auto">
                 <div class="card card-login">
-                    <form class="form" method="post" action="/login" id="loginForm" name="loginForm">
+                    <form class="form" method="post" action="/login" id="loginForm" name="loginForm"
+                          onsubmit="return false">
                         <div class="card-header card-header-success text-center">
                             <h4 class="card-title">登录</h4>
                             <div class="social-line">
@@ -75,6 +79,32 @@
         var password = loginForm.password.value;
         if (username !== "" && password !== "") {
             // 登录
+            $.ajax({
+                url: "/login",
+                type: "post",
+                data: {
+                    "username": username,
+                    "password": password,
+                },
+                async: true,
+                success: function (result) {
+                    if (result.status === 0) {
+                        Swal.fire({
+                            type: 'success',
+                            text: result.msg,
+                            footer: '一秒后自动跳转，若无反应<a href="/">点击跳转</a>'
+                        });
+                        setTimeout(function () {
+                            window.location.href = "/"
+                        }, 1000);
+                    } else {
+                        Swal.fire({
+                            type: 'error',
+                            text: result.msg,
+                        });
+                    }
+                }
+            });
         } else {
             Swal.fire({
                 type: 'error',
