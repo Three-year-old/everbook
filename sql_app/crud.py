@@ -150,7 +150,50 @@ def put_book_in_shelf(db: Session, url: str, name: str, id: str):
 
 
 def check_book_in_shelf(db: Session, url: str):
+    """
+    检查书架中是否存在该书
+    :param db:
+    :param url:
+    :return:
+    """
     db_book = db.query(models.Shelf).filter(models.Shelf.url == url).first()
     if db_book:
+        return True
+    return False
+
+
+def check_book_in_shelf_by_id(db: Session, id: str):
+    """
+    检查书架中是否存在该书
+    :param id:
+    :param db:
+    :return:
+    """
+    db_book = db.query(models.Shelf).filter(models.Shelf.id == id).first()
+    if db_book:
+        return True
+    return False
+
+
+def get_user_all_book(db: Session, user_id: str):
+    """
+    获取用户书架
+    :param db:
+    :param user_id:
+    :return:
+    """
+    return db.query(models.Shelf).filter(models.Shelf.user_id == user_id).all()
+
+
+def delete_book_from_shelf(db: Session, url: str):
+    """
+    将小说从书架移除
+    :param db:
+    :param url:
+    :return:
+    """
+    if check_book_in_shelf_by_id(id=url, db=db):
+        book = db.query(models.Shelf).filter(models.Shelf.id == url).delete()
+        db.commit()
         return True
     return False

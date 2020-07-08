@@ -74,7 +74,7 @@ async def search(request: Request, keyword: str, db: Session = Depends(get_db), 
     })
 
 
-@router.get("/chapter/")
+@router.get("/chapter")
 async def get_book_chapter(request: Request, url: str, db: Session = Depends(get_db)):
     """
     获取小说章节以及其他信息

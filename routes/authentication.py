@@ -8,7 +8,7 @@ from starlette.status import HTTP_303_SEE_OTHER
 from starlette.templating import Jinja2Templates
 
 from sql_app.crud import create_user, username_is_exist, email_is_exist, set_cookie, get_login_user, put_book_in_shelf, \
-    check_book_in_shelf
+    check_book_in_shelf, get_user_all_book, delete_book_from_shelf
 from sql_app.database import SessionLocal
 
 router = APIRouter()
@@ -96,11 +96,14 @@ async def examine_email(email: str = Form(...), db: Session = Depends(get_db)):
 
 @router.get("/user")
 async def get_user(request: Request, login_status: Optional[str] = Cookie(None),
-                   username: Optional[str] = Cookie(None)):
+                   username: Optional[str] = Cookie(None), db: Session = Depends(get_db)):
     if login_status:
+        user = username_is_exist(db=db, username=username)
+        book = get_user_all_book(db=db, user_id=user.id)
         return templates.TemplateResponse("user.html", {
             "request": request,
             "username": username,
+            "books": book,
         })
     else:
         return RedirectResponse(url="/", status_code=HTTP_303_SEE_OTHER)
@@ -122,4 +125,17 @@ async def mark_book(url: str = Form(...), name: str = Form(...), id: str = Form(
     return {
         "code": "error",
         "msg": "未知错误"
+    }
+
+
+@router.post("/delete/book")
+async def delete(url: str = Form(...), db: Session = Depends(get_db)):
+    if delete_book_from_shelf(db=db, url=url):
+        return {
+            "code": "success",
+            "msg": "删除成功",
+        }
+    return {
+        "code": "error",
+        "msg": "该书不存在",
     }
