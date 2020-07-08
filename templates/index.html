@@ -10,7 +10,7 @@
 <body>
 <div class="auth">
     {% if username %}
-        <a id="login-button" href="/login">{{ username }}</a>
+        <a id="user" href="/user">{{ username }}</a>
     {% else %}
         <a id="login-button" href="/login">登录</a>
     {% endif %}
@@ -31,7 +31,7 @@
 </body>
 <script>
     $(document).ready(function () {
-        if ($.cookie("login") !== null && window.location.pathname !== "/") {
+        if ($.cookie("login_status") !== null && window.location.pathname !== "/") {
             window.location.href = "/";
         }
     })

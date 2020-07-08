@@ -51,7 +51,7 @@ async def register_user(request: Request, response: Response, username: str = Fo
 
 @router.post("/login")
 def login_user(request: Request, response: Response, username: str = Form(...), password: str = Form(...),
-                     db: Session = Depends(get_db)):
+               db: Session = Depends(get_db)):
     user = get_login_user(db=db, username=username, password=password)
     if not user:
         return {
@@ -94,9 +94,12 @@ async def examine_email(email: str = Form(...), db: Session = Depends(get_db)):
 
 
 @router.get("/user")
-async def get_user(request: Request, login_status: Optional[str] = Cookie(None)):
+async def get_user(request: Request, login_status: Optional[str] = Cookie(None),
+                   username: Optional[str] = Cookie(None)):
     if login_status:
         return templates.TemplateResponse("user.html", {
+            "request": request,
+            "username": username,
         })
     else:
         return RedirectResponse(url="/", status_code=HTTP_303_SEE_OTHER)

@@ -29,9 +29,13 @@ def get_db():
 
 @router.get("/")
 async def read_root(request: Request, username: Optional[str] = Cookie(None)):
+    if username:
+        return templates.TemplateResponse("index.html", {
+            "request": request,
+            "username": username,
+        })
     return templates.TemplateResponse("index.html", {
         "request": request,
-        "username": username,
     })
 
 
