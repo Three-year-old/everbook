@@ -7,6 +7,8 @@ from starlette.responses import RedirectResponse
 from starlette.templating import Jinja2Templates
 
 from fetch.BaiduCrawler import BaiduCrawler
+from fetch.BingCrawler import BingCrawler
+from fetch.SoCrawler import SoCrawler
 from fetch.cache import get_novels_chapter, get_novels_content
 from fetch.utils import get_netloc
 from sql_app import schemas, crud
@@ -55,6 +57,8 @@ async def search(request: Request, keyword: str, db: Session = Depends(get_db), 
         blacklist.append(item.domain)
 
     baidu = BaiduCrawler()
+    bing = BingCrawler()
+    so = SoCrawler()
 
     # 获取已解析的域名
     allow = []
@@ -62,7 +66,9 @@ async def search(request: Request, keyword: str, db: Session = Depends(get_db), 
         allow.append(item[0])
 
     start = time.clock()
-    results = await baidu.search(keyword=keyword, blacklist=blacklist, allow=allow)
+    results = await baidu.search(keyword=keyword, blacklist=blacklist, allow=allow) + \
+              await bing.search(keyword=keyword, blacklist=blacklist, allow=allow) + \
+              await so.search(keyword=keyword, blacklist=blacklist, allow=allow)
     end = time.clock()
     return templates.TemplateResponse("result.html", {
         "request": request,
