@@ -35,7 +35,7 @@ async def data_extraction(html, blacklist, allow):
         is_parse = True if netloc in allow else False
         return {'title': title,
                 'url': url.replace('index.html', '').replace('Index.html', ''),
-                'is_parse': is_parse,
+                'parsed': is_parse,
                 'netloc': netloc}
     except Exception as e:
         return None

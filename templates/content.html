@@ -89,7 +89,7 @@
         var context = document.getElementById("context");
         if (btn.getAttribute("property") == "night") {
             context.style.cssText = "background-color: #0f1112 !important;";
-            document.body.style.cssText = "background-color: #444 !important; background-image: url('../images/night.png');";
+            document.body.style.cssText = "background-color: #444 !important";
             btn.innerHTML = "<i class=\"material-icons\">wb_sunny</i>";
             btn.setAttribute("property", "day");
             var title = context.getElementsByTagName("h4");
@@ -101,7 +101,7 @@
             document.getElementById("nav").className += " bg-dark";
         } else if (btn.getAttribute("property") == "day") {
             context.style.cssText = "background-color: #ede7da !important;";
-            document.body.style.cssText = "background-color: #ede7da !important; background-image: url('../images/day.png');";
+            document.body.style.cssText = "background-color: #ede7da !important";
             btn.innerHTML = "<i class=\"material-icons\">bedtime</i>";
             btn.setAttribute("property", "night");
             document.getElementById("nav").classList.remove("bg-dark");

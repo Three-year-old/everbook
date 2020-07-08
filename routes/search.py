@@ -6,10 +6,8 @@ from sqlalchemy.orm import Session
 from starlette.responses import RedirectResponse
 from starlette.templating import Jinja2Templates
 
-from fetch.BaiduCrawler import BaiduCrawler
-from fetch.BingCrawler import BingCrawler
-from fetch.SoCrawler import SoCrawler
-from fetch.cache import get_novels_chapter, get_novels_content
+from fetch.Novel import get_novels_chapter, get_novels_content
+from fetch.cache import cache_search_keyword
 from fetch.utils import get_netloc
 from sql_app import schemas, crud
 from sql_app.crud import get_all_blacklist, get_allow_domain, get_rule_by_netloc
@@ -56,19 +54,13 @@ async def search(request: Request, keyword: str, db: Session = Depends(get_db), 
     for item in get_all_blacklist(db):
         blacklist.append(item.domain)
 
-    baidu = BaiduCrawler()
-    bing = BingCrawler()
-    so = SoCrawler()
-
     # 获取已解析的域名
     allow = []
     for item in get_allow_domain(db):
         allow.append(item[0])
 
     start = time.clock()
-    results = await baidu.search(keyword=keyword, blacklist=blacklist, allow=allow) + \
-              await bing.search(keyword=keyword, blacklist=blacklist, allow=allow) + \
-              await so.search(keyword=keyword, blacklist=blacklist, allow=allow)
+    results = await cache_search_keyword(keyword=keyword, blacklist=blacklist, allow=allow)
     end = time.clock()
     return templates.TemplateResponse("result.html", {
         "request": request,
