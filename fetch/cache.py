@@ -35,6 +35,8 @@ async def cache_search_keyword(keyword, blacklist, allow):
         for index, item in enumerate(results):
             redis_client.set(keyword + ":" + str(index), json.dumps(item))
             redis_client.lpush(keyword, keyword + ":" + str(index))
+            redis_client.expire(keyword + ":" + str(index), 60 * 60 * 24)
+            redis_client.expire(keyword, 60 * 60 * 24)
     else:
         indexes = redis_client.lrange(keyword, 0, -1)
         results = []
@@ -80,7 +82,7 @@ async def cache_novel_chapter(url, choice, chapter_tag, chapter_value):
                 content = soup.find_all(chapter_value)
                 # todo
             redis_client.set(url, json.dumps(novel))
-            redis_client.expire(url, 5)
+            redis_client.expire(url, 60 * 60 * 24)
             return novel if content else None
         return None
     else:
@@ -136,6 +138,7 @@ async def cache_novel_content(url, content_tag, content_value):
                     "href": value,
                 })
             redis_client.set(url, json.dumps(novel))
+            redis_client.expire(url, 60 * 60 * 24)
             return novel if content else None
         return None
     else:
