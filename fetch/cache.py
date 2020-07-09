@@ -70,15 +70,17 @@ async def cache_novel_chapter(url, choice, chapter_tag, chapter_value):
             parser = NovelParse(novel=novel, rule=choice, url=url)
             if chapter_tag == "id":
                 content = soup.find_all(id=chapter_value)
-                # todo
+                novel = parser.parse_id_chapter_list(content=content)
             elif chapter_tag == "class":
-                # 若需要解析的内容包含在含有class属性的div中，根据定义的解析规则获取符合条件的div
+                # 若需要解析的内容包含在含有class属性的div中
+                # 根据定义的解析规则获取符合条件的div
                 content = soup.find_all(class_=chapter_value)
                 novel = parser.parse_biquge(content=content)
             else:
                 content = soup.find_all(chapter_value)
                 # todo
             redis_client.set(url, json.dumps(novel))
+            redis_client.expire(url, 5)
             return novel if content else None
         return None
     else:

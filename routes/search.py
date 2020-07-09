@@ -92,8 +92,11 @@ async def get_book_chapter(request: Request, url: str, db: Session = Depends(get
     content = await get_novels_chapter(url=url, choice=rule.choice, chapter_tag=rule.chapter_tag,
                                        chapter_value=rule.chapter_value)
     info = [i.strip() for i in content["info"] if i.strip() is not ""]
-    novel = info[0]
-    info = info[1::]
+    if len(info) != 0:
+        novel = info[0]
+        info = info[1::]
+    else:
+        novel = "未解析到书名"
     intro = [i.strip() for i in content["intro"] if i.strip() is not ""]
     chapters = content["chapter"]
     if content:

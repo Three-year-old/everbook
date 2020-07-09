@@ -52,3 +52,39 @@ class NovelParse:
                         })
                 self.novel["chapter"] = chapter
         return self.novel
+
+    def parse_id_chapter_list(self, content):
+        """
+        解析目录包含在id为chapter_list的div标签中的小说
+        这种不包括小说的介绍只有章节目录
+        :param content:
+        :return:
+        """
+        info = []
+        intro = []
+        chapter = []
+        if self.rule == 0:
+            for items in content:
+                for item in items.find_all(class_="chapter_list_chapterx"):
+                    chapter.append({
+                        "name": item.text,
+                        "href": self.url + item.a["href"],
+                    })
+        if self.rule == 1:
+            for items in content:
+                for item in items.find_all(class_="chapter_list_chapterx"):
+                    chapter.append({
+                        "name": item.text,
+                        "href": item.a["href"],
+                    })
+        if self.rule == 2:
+            for items in content:
+                for item in items.find_all(class_="chapter_list_chapterx"):
+                    chapter.append({
+                        "name": item.text,
+                        "href": '{uri.scheme}://{uri.netloc}/'.format(uri=urlparse(self.url)) + item.a["href"],
+                    })
+        self.novel["info"] = info
+        self.novel["intro"] = intro
+        self.novel["chapter"] = chapter
+        return self.novel
